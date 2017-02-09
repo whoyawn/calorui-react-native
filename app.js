@@ -38,7 +38,7 @@ class App extends Component {
             {
                 key: Date.now(), //just unique identifier
                 text: this.state.value, //add text of value just entered
-                // complete: false
+                test: 'hihihihihi'
             }
         ];
         // now set new state and clear out text
@@ -46,24 +46,26 @@ class App extends Component {
     }
     render() {
         return (
-            <View>
+            <View style={styles.container}>
                 <Header/>
                 <DataTable
                     value={this.state.value}
                     onAddItem={this.handleAddItem}
                     onChange={(value) => this.setState({ value })}
                 />
-                <View>
-                    <ListView
+                <View style={styles.content}>
+                    <ListView style={styles.content}
                         enableEmptySections
                         dataSource={this.state.dataSource}
                         onScroll={() => Keyboard.dismiss()}
                         //passed value of what we set in our datasource
+                        // each value of the spread is the rest of the object
                         renderRow={({ key, ...value}) => {
+                            console.log(value);
                             return (
                                 <Row
                                     key={key}
-                                    {...value}
+                                    { ...value}
                                 />
                             )
                         }}
@@ -78,6 +80,20 @@ class App extends Component {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#F5F5F5",
+        ...Platform.select({
+            ios: { paddingTop: 30 }
+        })
+    },
+    content: {
+        flex: 1
+    },
+    list: {
+        backgroundColor: '#FFF',
+        borderColor: "#F5F5F5"
+    },
     separator: {
         borderWidth: 1,
         borderColor: "#F5F5F5"

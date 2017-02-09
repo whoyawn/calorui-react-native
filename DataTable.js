@@ -10,7 +10,7 @@ class DataTable extends Component {
             <View style={styles.header}>
                 <TextInput
                     value={this.props.value} // will be app's state.value
-                    onChange={this.props.onChange}
+                    onChangeText={this.props.onChange}
                     onSubmitEditing={this.props.onAddItem}
                     placeholder="add a food item"
                     blurOnSubmit={false}

@@ -19,7 +19,7 @@ class Header extends Component {
 const styles = StyleSheet.create({
     header: {
         paddingTop: 16,
-        backgroundColor: "#F5F5F5",
+        backgroundColor: "#3F4242",
         paddingHorizontal: 16,
         flexDirection: 'row',
         justifyContent: 'space-around',
@@ -28,7 +28,8 @@ const styles = StyleSheet.create({
     text: {
         flex: 1,
         marginLeft: 16,
-        height: 50
+        height: 50,
+        color: "white"
     }
 });
 
