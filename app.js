@@ -20,6 +20,7 @@ class App extends Component {
             // so ListView knows whether to re-render it or not.
             dataSource: ds.cloneWithRows([])
         };
+        this.handleRemoveItem = this.handleRemoveItem.bind(this);
         this.setSource = this.setSource.bind(this);
         this.handleAddItem = this.handleAddItem.bind(this);
     }
@@ -30,6 +31,12 @@ class App extends Component {
             dataSource: this.state.dataSource.cloneWithRows(itemsDataSource),
             ...otherState // spread in any other state given
         })
+    }
+    handleRemoveItem(key) {
+        const newItems = this.state.items.filter((item) => {
+            return item.key !== key;
+        });
+        this.setSource(newItems, newItems)
     }
     handleAddItem() {
         if(!this.state.value) return; // don't add empty text
@@ -61,10 +68,11 @@ class App extends Component {
                         //passed value of what we set in our datasource
                         // each value of the spread is the rest of the object
                         renderRow={({ key, ...value}) => {
-                            console.log(value);
+
                             return (
                                 <Row
                                     key={key}
+                                    onRemove={() => this.handleRemoveItem(key)}
                                     { ...value}
                                 />
                             )
