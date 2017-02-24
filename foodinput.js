@@ -28,11 +28,10 @@ class FoodInput extends Component {
         />
         <TextInput
           ref={textInput => this.nextInput = textInput}
-          value={this.props.value}
+          value={this.props.amount}
           onChangeText={this.props.onChangeAmount}
           placeholder="amount calories"
           blurOnSubmit={false}
-          returnKeyType="done"
           keyboardType="numeric"
           style={styles.inputRight}
         />

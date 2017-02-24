@@ -39,6 +39,15 @@ class App extends Component {
         console.log('error');
       }
     });
+    AsyncStorage.getItem('total').then((result) => {
+      try {
+        this.setState({
+          total: parseInt(result, 10),
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    });
   }
 
   handleUpdateText(key, text) {
@@ -71,9 +80,11 @@ class App extends Component {
       ...otherState, // spread in any other state given
     });
     AsyncStorage.setItem('items', JSON.stringify(items));
+    AsyncStorage.setItem('total', this.state.total.toString());
   }
 
   handleRemoveItem(key) {
+    // TODO: subtract from total
     const newItems = this.state.items.filter(item => item.key !== key);
     this.setSource(newItems, newItems);
   }
