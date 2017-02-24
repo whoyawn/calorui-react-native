@@ -36,7 +36,7 @@ class App extends Component {
         const items = JSON.parse(json);
         this.setSource(items, items, { loading: false });
       } catch (e) {
-        false;
+        console.log('error');
       }
     });
   }
@@ -86,7 +86,7 @@ class App extends Component {
       ...this.state.items, // spread old items into array
       {
         key: Date.now(), // just unique identifier
-        text: this.state.title, // add text of value just entered
+        title: this.state.title, // add text of value just entered
         amount: this.state.amount,
       },
     ];
@@ -105,7 +105,6 @@ class App extends Component {
         <FoodInput
           title={this.state.title}
           amount={this.state.amount}
-          onAddTitle={this.handleAddItem}
           onAddAmount={this.handleAddItem}
           onChangeTitle={title => this.setState({ title })}
           onChangeAmount={amount => this.setState({ amount })}
@@ -126,7 +125,7 @@ class App extends Component {
                 onRemove={() => this.handleRemoveItem(key)}
                 {...value}
               />
-                      )}
+            )}
             renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
           />
         </View>

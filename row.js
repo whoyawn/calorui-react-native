@@ -10,7 +10,7 @@ class Row extends Component {
       <TouchableOpacity onLongPress={() => this.props.onToggleEdit(true)}>
         <Text style={styles.text}>{this.props.title}</Text>
       </TouchableOpacity>
-        );
+    );
     const editingTitleComponent = (
       <View style={styles.textWrap}>
         <TextInput
@@ -21,30 +21,30 @@ class Row extends Component {
           multiline
         />
       </View>
-        );
+    );
 
-    const textValueComponent = (
+    const textAmountComponent = (
       <TouchableOpacity onLongPress={() => this.props.onToggleEdit(true)}>
-        <Text style={styles.text}>{this.props.value}</Text>
+        <Text style={styles.text}>{this.props.amount}</Text>
       </TouchableOpacity>
-        );
-    const editingValueComponent = (
+    );
+    const editingAmountComponent = (
       <View style={styles.textWrap}>
         <TextInput
           onChangeText={this.props.onUpdate}
           autoFocus
-          value={this.props.value}
+          value={this.props.amount}
           style={styles.input}
           multiline
         />
       </View>
-        );
+    );
 
     const doneButton = (
       <TouchableOpacity style={styles.done} onPress={() => this.props.onToggleEdit(false)}>
         <Text style={styles.doneText}>Save</Text>
       </TouchableOpacity>
-        );
+    );
 
     const removeButton = (
       <TouchableOpacity onPress={this.props.onRemove}>
@@ -54,7 +54,7 @@ class Row extends Component {
     return (
       <View style={styles.container}>
         {this.props.editing ? editingTitleComponent : textTitleComponent}
-        {this.props.editing ? editingValueComponent : textValueComponent}
+        {this.props.editing ? editingAmountComponent : textAmountComponent}
         {this.props.editing ? doneButton : removeButton }
       </View>
     );
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
   text: {
     flex: 1,
     fontSize: 24,
-    color: '#4d4d4d',
+    color: '#141414',
   },
   destroy: {
     fontSize: 20,

@@ -5,19 +5,29 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 
 class FoodInput extends Component {
+  constructor(props) {
+    super(props);
+    // bind makes it so that the `this` keyword when you call this.nextInput
+    // corresponds to FoodInput's this. because i declared `this.nextInput`.
+    this.focus = this.focus.bind(this);
+  }
+  focus() {
+    this.nextInput.focus();
+  }
   render() {
     return (
       <View style={styles.header}>
         <TextInput
           value={this.props.title} // will be app's state.value
           onChangeText={this.props.onChangeTitle}
-          onSubmitEditing={this.props.onAddTitle}
+          onSubmitEditing={this.focus}
           placeholder="add a food item"
           blurOnSubmit={false}
           returnKeyType="next"
           style={styles.inputLeft}
         />
         <TextInput
+          ref={textInput => this.nextInput = textInput}
           value={this.props.value}
           onChangeText={this.props.onChangeAmount}
           placeholder="amount calories"
