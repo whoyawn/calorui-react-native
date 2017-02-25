@@ -1,6 +1,7 @@
 /**
  * Created by huyanh on 2017. 2. 8..
  */
+// @flow
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Platform, ListView, Keyboard, AsyncStorage } from 'react-native';
 import Header from './header';

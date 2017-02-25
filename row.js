@@ -1,8 +1,10 @@
 /**
  * Created by huyanh on 2017. 2. 9..
  */
+// @flow
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+
 
 class Row extends Component {
   render() { // this.props.text comes from spread operator in renderRow
@@ -11,6 +13,7 @@ class Row extends Component {
         <Text style={styles.text}>{this.props.title}</Text>
       </TouchableOpacity>
     );
+
     const editingTitleComponent = (
       <View style={styles.textWrap}>
         <TextInput
