@@ -5,8 +5,17 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 
+type Props = {
+  onToggleEdit: (boolean) => void,
+  title: string,
+  onUpdate: () => void,
+  amount: number,
+  onRemove: (number) => void,
+}
 
 class Row extends Component {
+  props: Props;
+
   render() { // this.props.text comes from spread operator in renderRow
     const textTitleComponent = (
       <TouchableOpacity onLongPress={() => this.props.onToggleEdit(true)}>
@@ -31,6 +40,7 @@ class Row extends Component {
         <Text style={styles.text}>{this.props.amount}</Text>
       </TouchableOpacity>
     );
+
     const editingAmountComponent = (
       <View style={styles.textWrap}>
         <TextInput
@@ -53,7 +63,8 @@ class Row extends Component {
       <TouchableOpacity onPress={this.props.onRemove}>
         <Text style={styles.destroy}>X</Text>
       </TouchableOpacity>
-        );
+    );
+
     return (
       <View style={styles.container}>
         {this.props.editing ? editingTitleComponent : textTitleComponent}

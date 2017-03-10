@@ -3,9 +3,16 @@
  */
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+// @flow
+
+type Props = {
+  title: string,
+  onChangeTitle: () => void,
+  amount: number,
+}
 
 class FoodInput extends Component {
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     // bind makes it so that the `this` keyword when you call this.nextInput
     // corresponds to FoodInput's this. because i declared `this.nextInput`.
@@ -35,7 +42,10 @@ class FoodInput extends Component {
           keyboardType="numeric"
           style={styles.inputRight}
         />
-        <TouchableOpacity style={styles.done} onPress={this.props.onAddAmount}>
+        <TouchableOpacity
+          style={styles.done}
+          onPress={this.props.onAddAmount}
+        >
           <Text style={styles.doneText}>+</Text>
         </TouchableOpacity>
       </View>

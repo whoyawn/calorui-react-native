@@ -8,8 +8,24 @@ import Header from './header';
 import FoodInput from './foodinput';
 import Row from './row';
 
+type Props = {
+
+}
+
+type itemEntry = {key: string, title: string, amount: string, }
+
 class App extends Component {
-  constructor(props) {
+
+  state: {
+    loading: boolean,
+    total: number,
+    title: string,
+    amount: string,
+    items: itemEntry[],
+    dataSource: any,
+  };
+
+  constructor(props: Props) {
     super(props);
     // A rowHasChanged function is required to use ListView. Here we just say a
     // row has changed if the row we are on is not the same as the previous row.
@@ -36,6 +52,7 @@ class App extends Component {
       try {
         const items = JSON.parse(json);
         this.setSource(items, items, { loading: false });
+
       } catch (e) {
         console.log('error');
       }
@@ -45,13 +62,14 @@ class App extends Component {
         this.setState({
           total: parseInt(result, 10),
         });
+        if (this.state.items.length === 0) this.setState({ total: 0 });
       } catch (e) {
         console.log(e);
       }
     });
   }
 
-  handleUpdateText(key, text) {
+  handleUpdateText(key: string, text: string) {
     const newItems = this.state.items.map((item) => {
       if (item.key !== key) return item;
       return {
@@ -62,7 +80,7 @@ class App extends Component {
     this.setSource(newItems, newItems);
   }
 
-  handleToggleEditing(key, editing) {
+  handleToggleEditing(key: string, editing: boolean) {
     const newItems = this.state.items.map((item) => {
       if (item.key !== key) return item;
       return {
@@ -73,7 +91,7 @@ class App extends Component {
     this.setSource(newItems, newItems);
   }
 
-  setSource(items, itemsDataSource, otherState = {}) {
+  setSource(items, itemsDataSource, otherState: any = {}) {
     this.setState({
       items,
       // allows us to keep track of different items than are rendered on the screen
@@ -84,9 +102,14 @@ class App extends Component {
     AsyncStorage.setItem('total', this.state.total.toString());
   }
 
-  handleRemoveItem(key) {
+  handleRemoveItem(key: string) {
     // TODO: subtract from total
-    const newItems = this.state.items.filter(item => item.key !== key);
+    // const newTotal: number = this.state.total - amount < 0 ? 0 : this.state.total - amount;
+    // this.setState({ total: newTotal });
+    const newItems = this.state.items.filter((item) => {
+      if (item.key === key) this.setState({ total: this.state.total - item.amount });
+      return item.key !== key;
+    });
     this.setSource(newItems, newItems);
   }
 
@@ -102,7 +125,9 @@ class App extends Component {
         amount: this.state.amount,
       },
     ];
-    if (this.state.amount !== '') this.state.total += parseInt(this.state.amount, 10);
+    if (this.state.amount !== '') {
+      this.setState({ total: this.state.total + parseInt(this.state.amount, 10) });
+    }
     // now set new state and clear out text
     this.setSource(newItems, newItems, { title: '', amount: '' });
   }

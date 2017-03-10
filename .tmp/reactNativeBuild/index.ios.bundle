@@ -68604,13 +68604,30 @@ module.exports=throwOnWrongReactAPI;
 __d(/* calorui/app.js */function(global, require, module, exports) {Object.defineProperty(exports,"__esModule",{value:true});
 
 
+
 var _react=require(279    );var _react2=babelHelpers.interopRequireDefault(_react); // 279 = react
 var _reactNative=require(12            ); // 12 = react-native
 var _header=require(404       );var _header2=babelHelpers.interopRequireDefault(_header); // 404 = ./header
 var _foodinput=require(405          );var _foodinput2=babelHelpers.interopRequireDefault(_foodinput); // 405 = ./foodinput
 var _row=require(406    );var _row2=babelHelpers.interopRequireDefault(_row);var // 406 = ./row
 
+
+
+
+
+
+
 App=function(_Component){babelHelpers.inherits(App,_Component);
+
+
+
+
+
+
+
+
+
+
 function App(props){babelHelpers.classCallCheck(this,App);var _this=babelHelpers.possibleConstructorReturn(this,(App.__proto__||Object.getPrototypeOf(App)).call(this,
 props));
 
@@ -68636,10 +68653,20 @@ _this.handleAddItem=_this.handleAddItem.bind(_this);return _this;
 {var _this2=this;
 _reactNative.AsyncStorage.getItem('items').then(function(json){
 try{
-var items=JSON.parse(json);
-_this2.setSource(items,items,{loading:false});
+var _items=JSON.parse(json);
+_this2.setSource(_items,_items,{loading:false});
+
 }catch(e){
 console.log('error');
+}
+});
+_reactNative.AsyncStorage.getItem('total').then(function(result){
+try{
+_this2.setState({
+total:parseInt(result,10)});
+
+}catch(e){
+console.log(e);
 }
 });
 }},{key:'handleUpdateText',value:function handleUpdateText(
@@ -68674,9 +68701,13 @@ dataSource:this.state.dataSource.cloneWithRows(itemsDataSource)},
 otherState));
 
 _reactNative.AsyncStorage.setItem('items',JSON.stringify(items));
+_reactNative.AsyncStorage.setItem('total',this.state.total.toString());
 }},{key:'handleRemoveItem',value:function handleRemoveItem(
 
 key){
+
+
+
 var newItems=this.state.items.filter(function(item){return item.key!==key;});
 this.setSource(newItems,newItems);
 }},{key:'handleAddItem',value:function handleAddItem()
@@ -68689,11 +68720,13 @@ var newItems=[].concat(babelHelpers.toConsumableArray(
 this.state.items),[
 {
 key:Date.now(),
-text:this.state.title,
+title:this.state.title,
 amount:this.state.amount}]);
 
 
-if(this.state.amount!=='')this.state.total+=parseInt(this.state.amount,10);
+if(this.state.amount!==''){
+this.setState({total:this.state.total+parseInt(this.state.amount,10)});
+}
 
 this.setSource(newItems,newItems,{title:'',amount:''});
 }},{key:'render',value:function render()
@@ -68708,7 +68741,6 @@ total:this.state.total}),
 _react2.default.createElement(_foodinput2.default,{
 title:this.state.title,
 amount:this.state.amount,
-onAddTitle:this.handleAddItem,
 onAddAmount:this.handleAddItem,
 onChangeTitle:function onChangeTitle(title){return _this3.setState({title:title});},
 onChangeAmount:function onChangeAmount(amount){return _this3.setState({amount:amount});}}),
@@ -68838,29 +68870,48 @@ __d(/* calorui/foodinput.js */function(global, require, module, exports) {Object
 var _react=require(279    );var _react2=babelHelpers.interopRequireDefault(_react); // 279 = react
 var _reactNative=require(12            );var // 12 = react-native
 
-FoodInput=function(_Component){babelHelpers.inherits(FoodInput,_Component);function FoodInput(){babelHelpers.classCallCheck(this,FoodInput);return babelHelpers.possibleConstructorReturn(this,(FoodInput.__proto__||Object.getPrototypeOf(FoodInput)).apply(this,arguments));}babelHelpers.createClass(FoodInput,[{key:'render',value:function render()
+
+
+
+
+
+
+
+FoodInput=function(_Component){babelHelpers.inherits(FoodInput,_Component);
+function FoodInput(props){babelHelpers.classCallCheck(this,FoodInput);var _this=babelHelpers.possibleConstructorReturn(this,(FoodInput.__proto__||Object.getPrototypeOf(FoodInput)).call(this,
+props));
+
+
+_this.focus=_this.focus.bind(_this);return _this;
+}babelHelpers.createClass(FoodInput,[{key:'focus',value:function focus()
 {
+this.nextInput.focus();
+}},{key:'render',value:function render()
+{var _this2=this;
 return(
 _react2.default.createElement(_reactNative.View,{style:styles.header},
 _react2.default.createElement(_reactNative.TextInput,{
 value:this.props.title,
 onChangeText:this.props.onChangeTitle,
-onSubmitEditing:this.props.onAddTitle,
+onSubmitEditing:this.focus,
 placeholder:'add a food item',
 blurOnSubmit:false,
 returnKeyType:'next',
 style:styles.inputLeft}),
 
 _react2.default.createElement(_reactNative.TextInput,{
-value:this.props.value,
+ref:function ref(textInput){return _this2.nextInput=textInput;},
+value:this.props.amount,
 onChangeText:this.props.onChangeAmount,
 placeholder:'amount calories',
 blurOnSubmit:false,
-returnKeyType:'done',
 keyboardType:'numeric',
 style:styles.inputRight}),
 
-_react2.default.createElement(_reactNative.TouchableOpacity,{style:styles.done,onPress:this.props.onAddAmount},
+_react2.default.createElement(_reactNative.TouchableOpacity,{
+style:styles.done,
+onPress:this.props.onAddAmount},
+
 _react2.default.createElement(_reactNative.Text,{style:styles.doneText},'+'))));
 
 
@@ -68906,14 +68957,26 @@ FoodInput;
 __d(/* calorui/row.js */function(global, require, module, exports) {Object.defineProperty(exports,"__esModule",{value:true});
 
 
+
 var _react=require(279    );var _react2=babelHelpers.interopRequireDefault(_react); // 279 = react
 var _reactNative=require(12            );var // 12 = react-native
 
+
+
+
+
+
+
+
+
 Row=function(_Component){babelHelpers.inherits(Row,_Component);function Row(){babelHelpers.classCallCheck(this,Row);return babelHelpers.possibleConstructorReturn(this,(Row.__proto__||Object.getPrototypeOf(Row)).apply(this,arguments));}babelHelpers.createClass(Row,[{key:'render',value:function render()
+
+
 {var _this2=this;
 var textTitleComponent=
 _react2.default.createElement(_reactNative.TouchableOpacity,{onLongPress:function onLongPress(){return _this2.props.onToggleEdit(true);}},
 _react2.default.createElement(_reactNative.Text,{style:styles.text},this.props.title));
+
 
 
 var editingTitleComponent=
@@ -68928,17 +68991,17 @@ multiline:true}));
 
 
 
-var textValueComponent=
+var textAmountComponent=
 _react2.default.createElement(_reactNative.TouchableOpacity,{onLongPress:function onLongPress(){return _this2.props.onToggleEdit(true);}},
-_react2.default.createElement(_reactNative.Text,{style:styles.text},this.props.value));
+_react2.default.createElement(_reactNative.Text,{style:styles.text},this.props.amount));
 
 
-var editingValueComponent=
+var editingAmountComponent=
 _react2.default.createElement(_reactNative.View,{style:styles.textWrap},
 _react2.default.createElement(_reactNative.TextInput,{
 onChangeText:this.props.onUpdate,
 autoFocus:true,
-value:this.props.value,
+value:this.props.amount,
 style:styles.input,
 multiline:true}));
 
@@ -68952,14 +69015,14 @@ _react2.default.createElement(_reactNative.Text,{style:styles.doneText},'Save'))
 
 
 var removeButton=
-_react2.default.createElement(_reactNative.TouchableOpacity,{onPress:this.props.onRemove},
+_react2.default.createElement(_reactNative.TouchableOpacity,{onPress:this.props.onRemove(this.props.amount)},
 _react2.default.createElement(_reactNative.Text,{style:styles.destroy},'X'));
 
 
 return(
 _react2.default.createElement(_reactNative.View,{style:styles.container},
 this.props.editing?editingTitleComponent:textTitleComponent,
-this.props.editing?editingValueComponent:textValueComponent,
+this.props.editing?editingAmountComponent:textAmountComponent,
 this.props.editing?doneButton:removeButton));
 
 
@@ -68997,7 +69060,7 @@ fontSize:20},
 text:{
 flex:1,
 fontSize:24,
-color:'#4d4d4d'},
+color:'#141414'},
 
 destroy:{
 fontSize:20,
