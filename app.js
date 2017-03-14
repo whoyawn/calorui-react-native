@@ -48,23 +48,13 @@ class App extends Component {
   }
 
   componentWillMount() {
-    AsyncStorage.getItem('items').then((json) => {
+    AsyncStorage.multiGet(['items', 'total']).then((store) => {
       try {
-        const items = JSON.parse(json);
-        this.setSource(items, items, { loading: false });
-
+        const items = JSON.parse(store[0][1]);
+        const total = items.length > 0 ? parseInt(store[1][1], 10) : 0;
+        this.setSource(items, items, total, { loading: false });
       } catch (e) {
         console.log('error');
-      }
-    });
-    AsyncStorage.getItem('total').then((result) => {
-      try {
-        this.setState({
-          total: parseInt(result, 10),
-        });
-        if (this.state.items.length === 0) this.setState({ total: 0 });
-      } catch (e) {
-        console.log(e);
       }
     });
   }
@@ -91,26 +81,31 @@ class App extends Component {
     this.setSource(newItems, newItems);
   }
 
-  setSource(items, itemsDataSource, otherState: any = {}) {
+  setSource(items, itemsDataSource, total: number = this.state.total, otherState: any = {}) {
     this.setState({
       items,
       // allows us to keep track of different items than are rendered on the screen
       dataSource: this.state.dataSource.cloneWithRows(itemsDataSource),
+      total,
       ...otherState, // spread in any other state given
     });
-    AsyncStorage.setItem('items', JSON.stringify(items));
-    AsyncStorage.setItem('total', this.state.total.toString());
+    console.log('save', total);
+    const strTotal = total > 0 ? total.toString() : '0';
+    AsyncStorage.multiSet([['items', JSON.stringify(items)], ['total', strTotal]]);
   }
 
   handleRemoveItem(key: string) {
     // TODO: subtract from total
     // const newTotal: number = this.state.total - amount < 0 ? 0 : this.state.total - amount;
     // this.setState({ total: newTotal });
+    let total = this.state.total;
     const newItems = this.state.items.filter((item) => {
-      if (item.key === key) this.setState({ total: this.state.total - item.amount });
+      if (item.key === key) {
+        total = this.state.total - item.amount;
+      }
       return item.key !== key;
     });
-    this.setSource(newItems, newItems);
+    this.setSource(newItems, newItems, total);
   }
 
   handleAddItem() {
@@ -126,10 +121,11 @@ class App extends Component {
       },
     ];
     if (this.state.amount !== '') {
-      this.setState({ total: this.state.total + parseInt(this.state.amount, 10) });
+      // yell
     }
+    const total = this.state.total + parseInt(this.state.amount, 10);
     // now set new state and clear out text
-    this.setSource(newItems, newItems, { title: '', amount: '' });
+    this.setSource(newItems, newItems, total, { title: '', amount: '' });
   }
 
   render() {
@@ -157,6 +153,7 @@ class App extends Component {
             renderRow={({ key, ...value }) => (
               <Row
                 key={key}
+                poop={'poop'}
                 onUpdate={text => this.handleUpdateText(key, text)}
                 onToggleEdit={editing => this.handleToggleEditing(key, editing)}
                 onRemove={() => this.handleRemoveItem(key)}
