@@ -3,25 +3,28 @@
  */
 // @flow
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, Platform, ListView, Keyboard, AsyncStorage } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Platform, ListView, Keyboard, AsyncStorage } from 'react-native';
 import Header from './header';
 import FoodInput from './foodinput';
 import Row from './row';
 
 type Props = {
-
+  date: string,
+  total: number,
+  inputTitle: string,
+  inputAmount: number,
+  items: Object[],
 }
+type FoodEntry = {key: string, title: string, amount: string, editing: boolean}
 
-type itemEntry = {key: string, title: string, amount: string, }
-
-class App extends Component {
+class Page extends Component {
 
   state: {
     loading: boolean,
     total: number,
     title: string,
     amount: string,
-    items: itemEntry[],
+    items: FoodEntry[],
     dataSource: any,
   };
 
@@ -153,9 +156,11 @@ class App extends Component {
             renderRow={({ key, ...value }) => (
               <Row
                 key={key}
-                poop={'poop'}
                 onUpdate={text => this.handleUpdateText(key, text)}
-                onToggleEdit={editing => this.handleToggleEditing(key, editing)}
+                onToggleEdit={(editing) => {
+                  console.log(editing.type);
+                  this.handleToggleEditing(key, editing);
+                }}
                 onRemove={() => this.handleRemoveItem(key)}
                 {...value}
               />
@@ -208,4 +213,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default Page;

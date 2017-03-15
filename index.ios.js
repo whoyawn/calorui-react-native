@@ -2,5 +2,5 @@ import {
     AppRegistry
 } from 'react-native';
 
-import App from './app';
+import App from './src/app';
 AppRegistry.registerComponent('calorui', () => App);
