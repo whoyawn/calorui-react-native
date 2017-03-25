@@ -4,14 +4,17 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-class Header extends Component {
+class Header extends React.PureComponent {
+  props: {
+    date: string,
+    total: number,
+  };
+
   render() {
     return (
       <View style={styles.container}>
-        <Text
-          style={styles.text}
-        >
-          add in yo dumb calories
+        <Text style={styles.text}>
+          {this.props.date}
         </Text>
         <View style={styles.display}>
           <Text style={styles.displayText}>

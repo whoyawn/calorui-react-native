@@ -4,18 +4,8 @@
 // @flow
 import React, { Component } from 'react';
 import { View, StyleSheet, ActivityIndicator, Platform, ListView, Keyboard, AsyncStorage } from 'react-native';
-import Header from './header';
 import FoodInput from './foodinput';
 import Row from './row';
-
-type Props = {
-  date: string,
-  total: number,
-  inputTitle: string,
-  inputAmount: number,
-  items: Object[],
-}
-type FoodEntry = {key: string, title: string, amount: string, editing: boolean}
 
 class Page extends Component {
 
@@ -24,24 +14,24 @@ class Page extends Component {
     total: number,
     title: string,
     amount: string,
-    items: FoodEntry[],
-    dataSource: any,
+    // items: FoodEntry[],
+    // dataSource: any,
   };
 
   constructor(props: Props) {
     super(props);
     // A rowHasChanged function is required to use ListView. Here we just say a
     // row has changed if the row we are on is not the same as the previous row.
-    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
+    // const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
     this.state = {
       loading: true,
       total: 0,
       title: '', // will hold value for textinput
       amount: '',
-      items: [], // food items to input
+      // items: [], // food items to input
       // The clone methods suck in the new data and compute a diff for each row
       // so ListView knows whether to re-render it or not.
-      dataSource: ds.cloneWithRows([]),
+      // dataSource: ds.cloneWithRows([]),
     };
     this.handleUpdateText = this.handleUpdateText.bind(this);
     this.handleToggleEditing = this.handleToggleEditing.bind(this);
@@ -51,15 +41,21 @@ class Page extends Component {
   }
 
   componentWillMount() {
-    AsyncStorage.multiGet(['items', 'total']).then((store) => {
-      try {
-        const items = JSON.parse(store[0][1]);
-        const total = items.length > 0 ? parseInt(store[1][1], 10) : 0;
-        this.setSource(items, items, total, { loading: false });
-      } catch (e) {
-        console.log('error');
-      }
-    });
+
+  }
+
+  componentDidMount() {
+    this.props.onUpdate({ loading: false, items: [], total: 30 });
+    // AsyncStorage.multiGet(['items', 'total']).then((store) => {
+    //   try {
+    //     const items = JSON.parse(store[0][1]);
+    //     const total = items.length > 0 ? parseInt(store[1][1], 10) : 0;
+    //     // this.setSource(items, items, total, { loading: false });
+    //
+    //   } catch (e) {
+    //     console.log('error');
+    //   }
+    // });
   }
 
   handleUpdateText(key: string, text: string) {
@@ -84,17 +80,20 @@ class Page extends Component {
     this.setSource(newItems, newItems);
   }
 
-  setSource(items, itemsDataSource, total: number = this.state.total, otherState: any = {}) {
-    this.setState({
-      items,
-      // allows us to keep track of different items than are rendered on the screen
-      dataSource: this.state.dataSource.cloneWithRows(itemsDataSource),
-      total,
-      ...otherState, // spread in any other state given
-    });
+  setSource(items, itemsDataSource,
+            total: number = this.state.total,
+            otherState: any = {}) {
+    // this.setState({
+    //   items,
+    //   // allows us to keep track of different items than are rendered on the screen
+    //   dataSource: this.state.dataSource.cloneWithRows(itemsDataSource),
+    //   total,
+    //   ...otherState, // spread in any other state given
+    // });
     console.log('save', total);
     const strTotal = total > 0 ? total.toString() : '0';
-    AsyncStorage.multiSet([['items', JSON.stringify(items)], ['total', strTotal]]);
+    this.props.onUpdate({ items, total: strTotal });
+    // AsyncStorage.multiSet([['items', JSON.stringify(items)], ['total', strTotal]]);
   }
 
   handleRemoveItem(key: string) {
@@ -116,7 +115,7 @@ class Page extends Component {
     // i set the handler for FoodInput passing in a bool
     if (!this.state.amount) return; // don't add empty calories
     const newItems = [
-      ...this.state.items, // spread old items into array
+      ...this.props.data.items, // spread old items into array
       {
         key: Date.now(), // just unique identifier
         title: this.state.title, // add text of value just entered
@@ -128,7 +127,8 @@ class Page extends Component {
     }
     const total = this.state.total + parseInt(this.state.amount, 10);
     // now set new state and clear out text
-    this.setSource(newItems, newItems, total, { title: '', amount: '' });
+    this.props.onUpdate({ items: newItems, total });
+    //this.setSource(newItems, newItems, total, { title: '', amount: '' });
   }
 
   render() {
@@ -136,7 +136,7 @@ class Page extends Component {
       <View style={styles.container}>
         <Header
           style={styles.header}
-          total={this.state.total}
+          total={this.props.data.total}
         />
         <FoodInput
           title={this.state.title}
@@ -149,7 +149,7 @@ class Page extends Component {
           <ListView
             style={styles.content}
             enableEmptySections
-            dataSource={this.state.dataSource}
+            dataSource={this.props.data.source}
             onScroll={() => Keyboard.dismiss()}
             // passed value of what we set in our datasource
             // each value of the spread is the rest of the object
@@ -168,7 +168,7 @@ class Page extends Component {
             renderSeparator={(sectionId, rowId) => <View key={rowId} style={styles.separator} />}
           />
         </View>
-        {this.state.loading && <View style={styles.loading}>
+        {this.props.loading && <View style={styles.loading}>
           <ActivityIndicator
             animating
             size="large"
