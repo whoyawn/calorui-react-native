@@ -2,13 +2,17 @@
  * Created by huyanh on 2017. 3. 20..
  */
 import React, { Component } from 'react';
-import { View, FlatList, Text, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { connect } from 'react-redux';
 import PageDetail from './PageDetail';
 
 import type { Log } from './reducers/days';
+import type { Entry } from './reducers/entries';
 
 type Props = {
   log: Log,
+  addPage: () => void,
+  addEntry: (pageKey: string, entry: Entry) => void,
 }
 
 type State = {
@@ -42,20 +46,25 @@ class LogViewPager extends Component {
       {
         key: 2,
         date: 'wednesday',
-        entries: [{key: 'asasdfdf', title: 'poop', amount: '645'},{key: 'af', title: 'pee', amount: '645'}],
+        entries: [{key: 'asasdfdf', title: 'page', amount: '645'},{key: 'af', title: 'last', amount: '645'}],
       },
     ];
     return (
-      <FlatList
-        style={styles.flatList}
-        data={fakeLog}
-        onLayout={this.adjustPageSize}
-        renderItem={this.renderPage}
-        showsHorizontalScrollIndicator={false}
-        horizontal
-        pagingEnabled
-        directionalLockEnabled
-      />
+      <View style={styles.flatList}>
+        <TouchableOpacity style={{backgroundColor: 'red' ,paddingTop: 30}}
+                          onPress={this.props.addPage}>
+          <Text>+</Text>
+        </TouchableOpacity>
+        <FlatList
+          data={this.props.log}
+          onLayout={this.adjustPageSize}
+          renderItem={this.renderPage}
+          showsHorizontalScrollIndicator={false}
+          horizontal
+          pagingEnabled
+          directionalLockEnabled
+        />
+      </View>
     );
   }
 
@@ -69,7 +78,9 @@ class LogViewPager extends Component {
     return (
       <PageDetail
         entries={item.entries}
-        style={{width: this.state.width}}
+        date={item.date}
+        style={{ width: this.state.width }}
+        onAddEntry={entry => this.props.addEntry(item.key, entry)}
       />
     );
   }
@@ -83,8 +94,31 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
   return {
+    log: state.log,
+  };
+};
 
-  }
+// Action creators
+function addPage() {
+  return {
+    type: 'ADD_PAGE',
+    key: Date.now(),
+    date: 'monday',
+  };
+}
+function addEntry(pageKey: string, entry: Entry) {
+  return {
+    type: 'ADD_ENTRY',
+    key: pageKey,
+    entry,
+  };
 }
 
-export default LogViewPager;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addPage: () => dispatch(addPage()),
+    addEntry: (pageKey, entry) => dispatch(addEntry(pageKey, entry)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(LogViewPager);

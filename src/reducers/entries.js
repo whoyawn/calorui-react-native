@@ -6,15 +6,16 @@ import type { Action } from '../actions/types';
 // Inner list
 export type Entries = Array<Entry>;
 export type Entry = {
+  key: string,
   title: string,
   amount: number,
 }
 const initialState = [];
 
 // Update individual day
-function entries(state: Entries = initialState, action: Action): State {
+function entries(state: Entries = initialState, action: Action): Entries {
   if (action.type === 'ADD_ENTRY') {
-    if (state.pageId !== action.pageId)
+    if (state.key !== action.key)
       return state;
     return {
       ...state,

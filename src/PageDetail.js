@@ -32,6 +32,20 @@ class PageDetail extends React.PureComponent {
       amount: '',
     };
     this.renderRow = this.renderRow.bind(this);
+    this.handleAddEntry = this.handleAddEntry.bind(this);
+  }
+
+  handleAddEntry() {
+    const newEntry = {
+      key: Date.now(),
+      title: this.state.title,
+      amount: this.state.amount,
+    };
+    this.props.onAddEntry(newEntry);
+    this.setState({
+      title: '',
+      amount: '',
+    });
   }
 
   render() {
@@ -39,13 +53,13 @@ class PageDetail extends React.PureComponent {
       <View style={[styles.container, this.props.style]}>
         <Header
           style={styles.header}
-          date={'whatever'}
+          date={this.props.date}
           total={'0'}
         />
         <FoodInput
           title={this.state.title}
           amount={this.state.amount}
-          onAddAmount={this.handleAddItem}
+          onAddAmount={this.handleAddEntry}
           onChangeTitle={title => this.setState({ title })}
           onChangeAmount={amount => this.setState({ amount })}
         />
