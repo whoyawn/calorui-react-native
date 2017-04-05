@@ -50,6 +50,14 @@ class PageDetail extends React.PureComponent {
     });
   }
 
+  handleRemoveEntry(item) {
+    this.props.onRemoveEntry(item.key);
+    this.setState({
+      ...this.state,
+      total: this.state.total - item.amount,
+    });
+  }
+
   _parseTotal(): string {
     const total: number = this.props.entries.reduce((acc, val) => {
       return acc + val.amount;
@@ -94,9 +102,9 @@ class PageDetail extends React.PureComponent {
         title={item.title}
         onUpdate={() => {}}
         amount={item.amount.toString()}
-        onRemove={() => {}}
+        onRemove={() => this.handleRemoveEntry(item)}
       />
-    )
+    );
   }
 
 }

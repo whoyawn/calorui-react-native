@@ -31,27 +31,10 @@ class LogViewPager extends Component {
       width: 0,
       selectedIndex: 0,
     };
-    this.renderPage = this.renderPage.bind(this);
-    this.adjustPageSize = this.adjustPageSize.bind(this);
+    (this: any).renderPage = this.renderPage.bind(this);
+    (this: any).adjustPageSize = this.adjustPageSize.bind(this);
   }
   render() {
-    const fakeLog = [
-      {
-        key: 0,
-        date: 'monday',
-        entries: [{key: 'asdf', title: 'poop', amount: '645'},],
-      },
-      {
-        key: 1,
-        date: 'tuesday',
-        entries: [{key: 'asasdfdf', title: 'poop', amount: '645'},{key: 'af', title: 'pee', amount: '645'}],
-      },
-      {
-        key: 2,
-        date: 'wednesday',
-        entries: [{key: 'asasdfdf', title: 'page', amount: '645'},{key: 'af', title: 'last', amount: '645'}],
-      },
-    ];
     return (
       <View style={styles.flatList}>
         <TouchableOpacity style={{backgroundColor: 'red' ,paddingTop: 30}}
@@ -78,13 +61,14 @@ class LogViewPager extends Component {
     });
   }
 
-  renderPage({ item }): React.Element {
+  renderPage({ item }): React.Element<any> {
     return (
       <PageDetail
         entries={item.entries}
         date={item.date}
         style={{ width: this.state.width }}
         onAddEntry={entry => this.props.addEntry(item.key, entry)}
+        onRemoveEntry={entryKey => this.props.removeEntry(item.key, entryKey)}
       />
     );
   }
@@ -129,6 +113,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addPage: () => dispatch(addPage()),
     addEntry: (pageKey, entry) => dispatch(addEntry(pageKey, entry)),
+    removeEntry: (pageKey, entryKey) => dispatch(removeEntry(pageKey, entryKey)),
   };
 };
 
