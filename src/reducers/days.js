@@ -1,5 +1,6 @@
 /**
  * Created by huyanh on 2017. 3. 20..
+ * @flow
  */
 // import expect from 'expect';
 // import deepFreeze from 'deep-freeze';
@@ -17,7 +18,7 @@ export type Log = Array<Page>;
 
 const initialState = [];
 
-function day(state: Page, action: Action): Page {
+function day(state: any, action: Action): Page {
   if (action.type === 'ADD_PAGE') {
     return {
       key: action.key,
@@ -25,6 +26,7 @@ function day(state: Page, action: Action): Page {
       entries: [],
     };
   }
+  return state;
 }
 
 function days(state: Log = initialState, action: Action): Log {
@@ -35,13 +37,12 @@ function days(state: Log = initialState, action: Action): Log {
       day(undefined, action),
     ];
   }
-  if (action.type === 'DELETE_PAGE') {
 
-  }
   // Update individual day
-  if (action.type === 'ADD_ENTRY') {
-    return state.map(e => entries(e, action));
+  if (action.type === 'ADD_ENTRY' || action.type === 'REMOVE_ENTRY') {
+    return state.map(p => entries(p, action));
   }
+
   return state;
 }
 

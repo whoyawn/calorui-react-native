@@ -1,5 +1,6 @@
 /**
  * Created by huyanh on 2017. 3. 20..
+ * @flow
  */
 import React, { Component } from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -16,6 +17,7 @@ type Props = {
 }
 
 type State = {
+  height: number;
   width: number;
   selectedIndex: number;
 }
@@ -113,6 +115,13 @@ function addEntry(pageKey: string, entry: Entry) {
     type: 'ADD_ENTRY',
     key: pageKey,
     entry,
+  };
+}
+function removeEntry(pageKey: string, entryKey : string) {
+  return {
+    type: 'REMOVE_ENTRY',
+    key: pageKey,
+    entryKey,
   };
 }
 
