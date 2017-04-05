@@ -7,7 +7,7 @@ import FoodInput from './foodinput';
 import Header from './header';
 import Row from './row';
 
-import { Entries } from './reducers/entries';
+import { Entries, Entry } from './reducers/entries';
 
 type Props = {
   entries: Entries
@@ -36,16 +36,25 @@ class PageDetail extends React.PureComponent {
   }
 
   handleAddEntry() {
-    const newEntry = {
+    const amount = parseInt(this.state.amount, 10);
+    const newEntry: Entry = {
       key: Date.now(),
       title: this.state.title,
-      amount: this.state.amount,
+      amount,
     };
     this.props.onAddEntry(newEntry);
     this.setState({
+      total: this.state.total + amount,
       title: '',
       amount: '',
     });
+  }
+
+  _parseTotal(): string {
+    const total: number = this.props.entries.reduce((acc, val) => {
+      return acc + val.amount;
+    });
+    return total;
   }
 
   render() {
@@ -54,7 +63,7 @@ class PageDetail extends React.PureComponent {
         <Header
           style={styles.header}
           date={this.props.date}
-          total={'0'}
+          total={this.state.total.toString()}
         />
         <FoodInput
           title={this.state.title}
@@ -84,7 +93,7 @@ class PageDetail extends React.PureComponent {
         onToggleEdit={() => {}}
         title={item.title}
         onUpdate={() => {}}
-        amount={item.amount}
+        amount={item.amount.toString()}
         onRemove={() => {}}
       />
     )

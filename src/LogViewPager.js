@@ -25,6 +25,7 @@ class LogViewPager extends Component {
   constructor(props: Props) {
     super(props);
     this.state = {
+      height: 0,
       width: 0,
       selectedIndex: 0,
     };
@@ -70,6 +71,7 @@ class LogViewPager extends Component {
 
   adjustPageSize(e: any) {
     this.setState({
+      height: e.nativeEvent.layout.height,
       width: e.nativeEvent.layout.width,
     });
   }

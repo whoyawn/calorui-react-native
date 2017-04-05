@@ -6,9 +6,10 @@ import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-nativ
 // @flow
 
 type Props = {
+  onChangeTitle: (title: string) => void,
+  onChangeAmount: (amount: string) => void,
   title: string,
-  onChangeTitle: () => void,
-  amount: number,
+  amount: string,
 }
 
 class FoodInput extends Component {
