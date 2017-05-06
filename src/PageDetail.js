@@ -101,7 +101,7 @@ class PageDetail extends React.PureComponent {
         onToggleEdit={() => {}}
         title={item.title}
         onUpdate={() => {}}
-        amount={item.amount.toString()}
+        amount={item.amount ? item.amount.toString() : '0'}
         onRemove={() => this.handleRemoveEntry(item)}
       />
     );

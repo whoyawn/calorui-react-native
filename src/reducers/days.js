@@ -14,7 +14,7 @@ export type Page = {
 
 export type Log = Array<Page>;
 
-const initialState = [];
+const initialState = [{ key: 'page_one', date: 'tuesday', entries: [] }];
 
 function day(state: any, action: Action): Page {
   if (action.type === 'ADD_PAGE') {

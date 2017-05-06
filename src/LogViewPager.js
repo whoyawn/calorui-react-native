@@ -3,7 +3,7 @@
  * @flow
  */
 import React, { Component } from 'react';
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { connect } from 'react-redux';
 import PageDetail from './PageDetail';
 
@@ -22,10 +22,12 @@ type State = {
   selectedIndex: number;
 }
 // TODO: getItemLayout for FlatList, since item heights are constant
-class LogViewPager extends Component {
+class LogViewPager extends React.PureComponent {
   state: State;
+  _listRef: FlatList<*>;
   constructor(props: Props) {
     super(props);
+    // const { width, height } = Dimensions.get('window');
     this.state = {
       height: 0,
       width: 0,
@@ -35,23 +37,39 @@ class LogViewPager extends Component {
     (this: any).adjustPageSize = this.adjustPageSize.bind(this);
   }
   render() {
+    // i have no idea why this fixes it. i dont even need it now that i have getitemlayout
+    const log = [...this.props.log];
     return (
       <View style={styles.flatList}>
-        <TouchableOpacity style={{backgroundColor: 'red' ,paddingTop: 30}}
-                          onPress={this.props.addPage}>
-          <Text>+</Text>
-        </TouchableOpacity>
         <FlatList
+          ref={(flatList) => { this._listRef = flatList; }}
           data={this.props.log}
           onLayout={this.adjustPageSize}
           renderItem={this.renderPage}
           showsHorizontalScrollIndicator={false}
+          getItemLayout={(data, index) => {
+            // make this a prop later
+            const width = Dimensions.get('window').width;
+            // return { length: 0, offset: width * index, index }; oddly works
+            return { length: this.state.width, offset: width * index, index }; // only works because in the beginning width is 0
+          }}
+          removeClippedSubviews
           horizontal
           pagingEnabled
           directionalLockEnabled
         />
+        <TouchableOpacity
+          style={{ backgroundColor: 'red', paddingTop: 30 }}
+          onPress={this.props.addPage}
+        >
+          <Text>+</Text>
+        </TouchableOpacity>
       </View>
     );
+  }
+
+  componentDidMount() {
+    this._listRef.scrollToEnd({ animated: false });
   }
 
   adjustPageSize(e: any) {
@@ -80,11 +98,9 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => {
-  return {
-    log: state.log,
-  };
-};
+const mapStateToProps = state => ({
+  log: state.log,
+});
 
 // Action creators
 function addPage() {
@@ -109,12 +125,10 @@ function removeEntry(pageKey: string, entryKey : string) {
   };
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addPage: () => dispatch(addPage()),
-    addEntry: (pageKey, entry) => dispatch(addEntry(pageKey, entry)),
-    removeEntry: (pageKey, entryKey) => dispatch(removeEntry(pageKey, entryKey)),
-  };
-};
+const mapDispatchToProps = dispatch => ({
+  addPage: () => dispatch(addPage()),
+  addEntry: (pageKey, entry) => dispatch(addEntry(pageKey, entry)),
+  removeEntry: (pageKey, entryKey) => dispatch(removeEntry(pageKey, entryKey)),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(LogViewPager);
