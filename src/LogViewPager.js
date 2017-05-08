@@ -3,7 +3,15 @@
  * @flow
  */
 import React, { Component } from 'react';
-import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewPagerAndroid,
+  Platform,
+} from 'react-native';
 import { connect } from 'react-redux';
 import PageDetail from './PageDetail';
 
@@ -31,16 +39,28 @@ class LogViewPager extends React.PureComponent {
     this.state = {
       height: 0,
       width: 0,
-      selectedIndex: 0,
+      initialSelectedIndex: this.props.log.length - 1,
     };
     (this: any).renderPage = this.renderPage.bind(this);
     (this: any).adjustPageSize = this.adjustPageSize.bind(this);
   }
+
   render() {
     // i have no idea why this fixes it. i dont even need it now that i have getitemlayout
     const log = [...this.props.log];
     return (
-      <View style={styles.flatList}>
+      <ViewPagerAndroid
+        initialPage={this.state.initialSelectedIndex}
+        style={styles.container}
+      >
+        <PageDetail
+          entries={[]}
+          date={[]}
+        />
+      </ViewPagerAndroid>
+    );
+    return (
+      <View style={styles.container}>
         <FlatList
           ref={(flatList) => { this._listRef = flatList; }}
           data={this.props.log}
@@ -53,7 +73,7 @@ class LogViewPager extends React.PureComponent {
             // return { length: 0, offset: width * index, index }; oddly works
             return { length: this.state.width, offset: width * index, index }; // only works because in the beginning width is 0
           }}
-          removeClippedSubviews
+          removeClippedSubviews={false}
           horizontal
           pagingEnabled
           directionalLockEnabled
@@ -64,12 +84,22 @@ class LogViewPager extends React.PureComponent {
         >
           <Text>+</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={{ backgroundColor: 'blue', paddingTop: 20 }}
+          onPress={() => {
+            if (this._listRef) { this._listRef.scrollToEnd({ animated: true }); }
+          }}
+        >
+          <Text>scroll</Text>
+        </TouchableOpacity>
       </View>
     );
   }
 
   componentDidMount() {
-    this._listRef.scrollToEnd({ animated: false });
+    if (Platform.OS === 'ios') {
+      this._listRef.scrollToEnd({ animated: false });
+    }
   }
 
   adjustPageSize(e: any) {
@@ -77,6 +107,7 @@ class LogViewPager extends React.PureComponent {
       height: e.nativeEvent.layout.height,
       width: e.nativeEvent.layout.width,
     });
+    console.log(e.nativeEvent.layout.width);
   }
 
   renderPage({ item }): React.Element<any> {
@@ -93,7 +124,7 @@ class LogViewPager extends React.PureComponent {
 }
 
 const styles = StyleSheet.create({
-  flatList: {
+  container: {
     flex: 1,
   },
 });
